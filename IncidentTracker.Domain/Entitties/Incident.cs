@@ -4,6 +4,7 @@ using IncidentTracker.Domain.Exceptions;
 
 namespace IncidentTracker.Domain.Entitties;
 public class Incident : Entity {
+    private Incident() { }
     public Guid Id { get; private set; }
     public Guid AssetId { get; private set; }
     public Asset Asset { get; private set; }

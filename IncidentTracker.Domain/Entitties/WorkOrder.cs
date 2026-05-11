@@ -2,6 +2,7 @@
 
 namespace IncidentTracker.Domain.Entitties;
 public class WorkOrder : Entity {
+    private WorkOrder() { }
     public Guid Id { get; set; }
 
     public Guid IncidentId { get; set; }

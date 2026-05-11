@@ -2,7 +2,7 @@
 
 namespace IncidentTracker.Domain.Entitties;
 public class Asset : Entity {
-
+    private Asset() { }
     public Guid Id { get; private set; }
     public string Name { get; private set; }
     public string Code { get; private set; }

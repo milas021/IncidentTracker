@@ -21,6 +21,8 @@ public static class ApplicationResistartion {
     private static void AddServices(this IServiceCollection services) {
         services.AddScoped<AssetService>();
         services.AddScoped<IncidentService>();
+        services.AddScoped<UserService>();
+        services.AddScoped<TeamService>();
 
     }
 }

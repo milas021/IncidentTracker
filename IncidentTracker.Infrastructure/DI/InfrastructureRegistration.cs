@@ -28,6 +28,8 @@ public static class InfrastructureRegistration {
         services.AddScoped<IAssetRepository, AssetRepository>();
         services.AddScoped<IIncidentRepository, IncidentRepository>();
         services.AddScoped<IIncidentTimelineRepository, IncidentTimelineRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ITeamRepository, TeamRepository>();
 
     }
 }
