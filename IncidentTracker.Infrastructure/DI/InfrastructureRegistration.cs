@@ -30,6 +30,7 @@ public static class InfrastructureRegistration {
         services.AddScoped<IIncidentTimelineRepository, IncidentTimelineRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
+        services.AddScoped<IWorkOrderRepository, WorkOrderRepository>();
 
     }
 }

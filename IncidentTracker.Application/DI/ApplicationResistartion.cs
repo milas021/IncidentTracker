@@ -23,6 +23,7 @@ public static class ApplicationResistartion {
         services.AddScoped<IncidentService>();
         services.AddScoped<UserService>();
         services.AddScoped<TeamService>();
+        services.AddScoped<WorkOrderService>();
 
     }
 }
