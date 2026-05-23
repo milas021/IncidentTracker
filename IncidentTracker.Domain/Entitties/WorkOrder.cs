@@ -61,6 +61,20 @@ public class WorkOrder : Entity {
         return this;
     }
 
+    public void StartWorkOrder() {
+        if (Status != WorkOrderStatus.Assigned) {
+            throw new AppException("Invalid Operation");
+        }
+        Status = WorkOrderStatus.InProgress;
+        StartedAt = DateTime.UtcNow;
+    }
 
+    public void CompleteWorkOrder() {
+        if (Status != WorkOrderStatus.InProgress) {
+            throw new AppException("Invalid Operation");
+        }
+        Status = WorkOrderStatus.Done;
+        CompletedAt = DateTime.UtcNow;
+    }
 }
 
