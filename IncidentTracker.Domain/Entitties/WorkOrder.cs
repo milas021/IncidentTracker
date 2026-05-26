@@ -1,4 +1,5 @@
 ﻿using IncidentTracker.Domain.Enums;
+using IncidentTracker.Domain.Events;
 using IncidentTracker.Domain.Exceptions;
 
 namespace IncidentTracker.Domain.Entitties;
@@ -28,6 +29,8 @@ public class WorkOrder : Entity {
         IncidentId = incidentId;
         Status = WorkOrderStatus.Open;
         CreatedAt = DateTime.UtcNow;
+
+        AddDomainEvent(new WorkOrderCreatedEvent(incidentId));
     }
 
     public WorkOrder AssignUser(Guid? userId) {
@@ -75,6 +78,15 @@ public class WorkOrder : Entity {
         }
         Status = WorkOrderStatus.Done;
         CompletedAt = DateTime.UtcNow;
+    }
+
+    public void CancellWorkOrder() {
+        if (Status != WorkOrderStatus.InProgress) {
+            throw new AppException("Invalid Operatoin");
+        }
+
+        Status = WorkOrderStatus.Cancelled;
+
     }
 }
 

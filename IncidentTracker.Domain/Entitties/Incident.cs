@@ -48,5 +48,13 @@ public class Incident : Entity {
         AddDomainEvent(new IncidentAcknowledgedEvent(this.Id, oldStatus, newStatus, description, actor));
 
     }
+
+    public void InProgress() {
+        if (Status != IncidentStatus.Acknowledged) {
+            throw new AppException("Invalid Operation");
+        }
+
+        Status = IncidentStatus.InProgress;
+    }
 }
 

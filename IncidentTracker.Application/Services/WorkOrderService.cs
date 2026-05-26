@@ -1,11 +1,12 @@
 ﻿using IncidentTracker.Application.DTOs.WorkOrders;
+using IncidentTracker.Application.EventHandlers;
 using IncidentTracker.Application.Interfaces;
 using IncidentTracker.Application.Mapper;
 using IncidentTracker.Domain.Entitties;
 using IncidentTracker.Domain.Exceptions;
 
 namespace IncidentTracker.Application.Services;
-public class WorkOrderService(IWorkOrderRepository workOrderRepository) {
+public class WorkOrderService(IWorkOrderRepository workOrderRepository, DomainEventDispatcher eventDispatcher) {
 
     public async Task Add(AddWorkOrderCommand command) {
         var workOrder = new WorkOrder(command.IncidentId)
@@ -15,6 +16,11 @@ public class WorkOrderService(IWorkOrderRepository workOrderRepository) {
 
         await workOrderRepository.Add(workOrder);
         await workOrderRepository.Save();
+
+
+        //var domainEvents = workOrder.GetEvents();
+        //await eventDispatcher.DispatchAsync(domainEvents);
+        //workOrder.ClearDomainEvents();
     }
 
     public async Task<IEnumerable<WorkOrderDto>> GetByTeamId(Guid teamId) {
@@ -57,6 +63,17 @@ public class WorkOrderService(IWorkOrderRepository workOrderRepository) {
         }
 
         workOrder.CompleteWorkOrder();
+    }
+
+    public async Task CancellWorkOrder(Guid workOrderId, Guid actorId) {
+        var workOrder = await workOrderRepository.GetById(workOrderId);
+
+        if (workOrder.AssignedTeamId != actorId && workOrder.AssignedUserId != actorId) {
+            throw new AppException("This WorkOrder Is Not Yours");
+        }
+
+        workOrder.CancellWorkOrder();
+
     }
 
 }
