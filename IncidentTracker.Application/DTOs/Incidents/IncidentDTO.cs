@@ -10,7 +10,7 @@ public class IncidentDTO {
 
     public string Title { get; set; }
     public string Description { get; set; }
-    public IncidentPriority Severity { get; set; }
+    public IncidentPriority Priority { get; set; }
     public IncidentStatus Status { get; set; }
 
     public DateTime ReportedAt { get; set; }

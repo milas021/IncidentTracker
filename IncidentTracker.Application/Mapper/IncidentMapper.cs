@@ -17,7 +17,7 @@ public static class IncidentMapper {
             Id = incident.Id,
             ReportedAt = incident.ReportedAt,
             ResolvedAt = incident.ResolvedAt,
-            Severity = incident.Priority,
+            Priority = incident.Priority,
             Status = incident.Status,
             Title = incident.Title
         };
