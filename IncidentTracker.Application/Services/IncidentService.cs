@@ -31,10 +31,9 @@ public class IncidentService(IIncidentRepository incidentRepository, DomainEvent
         incident.Acknowledge(command.Priority, actor, command.Description);
         await incidentRepository.Save();
 
-        var domainEvents = incident.GetEvents();
-        await eventDispatcher.DispatchAsync(domainEvents);
-
-        incident.ClearDomainEvents();
+        //var domainEvents = incident.GetEvents();
+        //await eventDispatcher.DispatchAsync(domainEvents);
+        //incident.ClearDomainEvents();
     }
 
 }

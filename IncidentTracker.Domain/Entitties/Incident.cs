@@ -28,7 +28,7 @@ public class Incident : Entity {
         Title = title;
         Description = description;
         Status = IncidentStatus.Reported;
-        ReportedAt = DateTime.Now;
+        ReportedAt = DateTime.UtcNow;
     }
 
     public void Acknowledge(IncidentPriority priority, string actor, string description) {
@@ -43,11 +43,18 @@ public class Incident : Entity {
 
         var newStatus = this.Status;
 
-        AddDomainEvent(new IncidentAcknowledgedEvent(this.Id, oldStatus, newStatus, description, actor));
+        AcknowledgedAt = DateTime.UtcNow;
 
+        AddDomainEvent(new IncidentAcknowledgedEvent(this.Id, oldStatus, newStatus, description, actor));
 
     }
 
+    public void InProgress() {
+        if (Status != IncidentStatus.Acknowledged) {
+            throw new AppException("Invalid Operation");
+        }
 
+        Status = IncidentStatus.InProgress;
+    }
 }
 
