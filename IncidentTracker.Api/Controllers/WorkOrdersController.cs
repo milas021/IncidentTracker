@@ -1,43 +1,41 @@
-﻿using IncidentTracker.Domain.Entitties;
-using IncidentTracker.Domain.Enums;
-using IncidentTracker.Infrastructure.Data;
+using IncidentTracker.Application.DTOs.WorkOrders;
+using IncidentTracker.Application.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace IncidentTracker.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class WorkOrdersController : ControllerBase {
-    private readonly AppDbContext _db;
-    public WorkOrdersController(AppDbContext db) => _db = db;
+public class WorkOrdersController(WorkOrderService workOrderService) : ControllerBase {
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(Guid id)
-        => Ok(await _db.WorkOrders
-            .Include(w => w.AssignedTeam)
-            .Include(w => w.AssignedUser)
-            .FirstOrDefaultAsync(w => w.Id == id));
+    public async Task<IActionResult> Get(Guid id) {
+        var result = await workOrderService.Get(id);
+        return Ok(result);
+    }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] WorkOrder wo) {
-        _db.WorkOrders.Add(wo);
-        await _db.SaveChangesAsync();
-        return CreatedAtAction(nameof(Get), new { id = wo.Id }, wo);
-    }
-
-    [HttpPut("{id}/assign")]
-    public async Task<IActionResult> Assign(Guid id, Guid? teamId, Guid? userId) {
-        var wo = await _db.WorkOrders.FindAsync(id);
-        if (wo is null) {
-            return NotFound();
-        }
-
-        wo.AssignedTeamId = teamId;
-        wo.AssignedUserId = userId;
-        wo.Status = WorkOrderStatus.Assigned;
-
-        await _db.SaveChangesAsync();
+    public async Task<IActionResult> Create(AddWorkOrderCommand command) {
+        await workOrderService.Add(command);
         return NoContent();
     }
-}
 
+    [HttpPut("{id}/assign-team")]
+    public async Task<IActionResult> AssignToTeam(Guid id, AssignWorkOrderToTeamCommand command) {
+        await workOrderService.AssignWorkOrderToTeam(id, command);
+        return NoContent();
+    }
+
+    [HttpPut("{id}/assign-user")]
+    public async Task<IActionResult> AssignToUser(Guid id, AssignWorkOrderToUserCommand command) {
+        await workOrderService.AssignWorkOrderToUser(id, command);
+        return NoContent();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllWorkOrder()
+    {
+        var result = await workOrderService.GetAllWorkOrder();
+        return Ok(result);
+    }
+        
+}

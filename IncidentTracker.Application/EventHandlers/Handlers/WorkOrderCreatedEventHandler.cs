@@ -14,5 +14,7 @@ internal class WorkOrderCreatedEventHandler(IIncidentRepository incidentReposito
 
         incident.InProgress();
 
+        await incidentRepository.Save();
+
     }
 }

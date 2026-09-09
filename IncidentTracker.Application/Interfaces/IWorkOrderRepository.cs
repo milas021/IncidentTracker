@@ -6,4 +6,5 @@ public interface IWorkOrderRepository : IRepository {
     Task<IEnumerable<WorkOrder>> GetByUserId(Guid UserId);
     Task<IEnumerable<WorkOrder>> GetByTeamId(Guid teamId);
     Task<WorkOrder> GetById(Guid id);
+    Task<IEnumerable<WorkOrder>> GetAll();
 }

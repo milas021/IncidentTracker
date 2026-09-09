@@ -23,6 +23,12 @@ public class WorkOrderService(IWorkOrderRepository workOrderRepository, DomainEv
         //workOrder.ClearDomainEvents();
     }
 
+    public async Task<WorkOrderDto> Get(Guid id) {
+        var workOrder = await workOrderRepository.GetById(id);
+        var result = workOrder.ToDTO();
+        return result;
+    }
+
     public async Task<IEnumerable<WorkOrderDto>> GetByTeamId(Guid teamId) {
         var data = await workOrderRepository.GetByTeamId(teamId);
         var result = data.Select(x => x.ToDTO());
@@ -35,14 +41,16 @@ public class WorkOrderService(IWorkOrderRepository workOrderRepository, DomainEv
         return result;
     }
 
-    public async Task AssignWorkOrderToTeam(AssignWorkOrderToTeamCommand command) {
-        var workOrder = await workOrderRepository.GetById(command.WorkOrderId);
+    public async Task AssignWorkOrderToTeam(Guid workOrderId, AssignWorkOrderToTeamCommand command) {
+        var workOrder = await workOrderRepository.GetById(workOrderId);
         workOrder.AssignTeam(command.TeamId);
+        await workOrderRepository.Save();
     }
 
-    public async Task AssignWorkOrderToUser(AssignWorkOrderToUserCommand command) {
-        var workOrder = await workOrderRepository.GetById(command.WorkOrderId);
+    public async Task AssignWorkOrderToUser(Guid workOrderId, AssignWorkOrderToUserCommand command) {
+        var workOrder = await workOrderRepository.GetById(workOrderId);
         workOrder.AssignUser(command.UserId);
+        await workOrderRepository.Save();
     }
 
     public async Task StartWorkOrder(Guid workOrderId, Guid actorId) {
@@ -75,5 +83,13 @@ public class WorkOrderService(IWorkOrderRepository workOrderRepository, DomainEv
         workOrder.CancellWorkOrder();
 
     }
+
+    public async Task<IEnumerable< WorkOrderDto>> GetAllWorkOrder()
+    {
+        var result = await workOrderRepository.GetAll();
+        var dtos = result.Select((x => x.ToDTO()));
+        return dtos;
+    }
+        
 
 }

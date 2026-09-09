@@ -11,18 +11,39 @@ internal class WorkOrderRepository(AppDbContext context) : IWorkOrderRepository 
 
     public async Task<WorkOrder> GetById(Guid id) {
 
-        var result = await context.WorkOrders.SingleOrDefaultAsync(x => x.Id == id);
+        var result = await context.WorkOrders
+            .Include(x => x.Incident)
+            .Include(x => x.AssignedTeam)
+            .Include(x => x.AssignedUser)
+            .SingleOrDefaultAsync(x => x.Id == id);
+        return result;
+    }
+
+    public async Task<IEnumerable<WorkOrder>> GetAll() {
+        var result = await context.WorkOrders
+            .Include(x => x.AssignedTeam)
+            .Include(x => x.AssignedUser)
+            .Include(x => x.Incident)
+            .ToListAsync();
         return result;
     }
 
     public async Task<IEnumerable<WorkOrder>> GetByTeamId(Guid teamId) {
 
-        var result = await context.WorkOrders.Where(x => x.AssignedTeamId == teamId).ToListAsync();
+        var result = await context.WorkOrders
+            .Include(x => x.Incident)
+            .Include(x => x.AssignedTeam)
+            .Include(x => x.AssignedUser)
+            .Where(x => x.AssignedTeamId == teamId).ToListAsync();
         return result;
     }
 
     public async Task<IEnumerable<WorkOrder>> GetByUserId(Guid UserId) {
-        var result = await context.WorkOrders.Where(x => x.AssignedUserId == UserId).ToListAsync();
+        var result = await context.WorkOrders
+            .Include(x => x.Incident)
+            .Include(x => x.AssignedTeam)
+            .Include(x => x.AssignedUser)
+            .Where(x => x.AssignedUserId == UserId).ToListAsync();
         return result;
     }
 
